@@ -33,6 +33,7 @@ jobs:
       uses: actions/setup-java@v3.1.0
       with:
         java-version: 16
+        distribution: "zulu"
         
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
