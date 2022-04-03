@@ -13,6 +13,7 @@ import java.util.Timer;
  */
 public class Work {
 
+    private Timer timer;
     /**
      * Collection interval time (seconds)
      * <p>Chinese: <b>采集间隔时间(秒)</b></p>
@@ -69,9 +70,18 @@ public class Work {
     public void run() throws NoCollectorException {
         if (!collectionCPU && !collectionDisk && !collectionMemory && !collectionNetwork)
             throw new NoCollectorException("Minimum 1 collection item needs to be enabled!");
-        Timer timer = new Timer();
+        timer = new Timer();
         Obtain obtain = new Obtain(savePath, collectionCPU, collectionMemory, collectionDisk, collectionNetwork);
         timer.schedule(obtain, getNextMinute(), collectionIntervalTime * 1000);
+    }
+
+    /**
+     * Stop work
+     * <p>Chinese: <b>停止工作</b></p>
+     */
+    public void stop() {
+        timer.cancel();
+        timer = null;
     }
 
     /**
@@ -123,7 +133,7 @@ public class Work {
      * Get the next minute
      * <p>Chinese: <b>获取下一分钟</b></p>
      */
-    private Date getNextMinute() {
+    public Date getNextMinute() {
         Calendar calendar = Calendar.getInstance();
         int minute = calendar.get(Calendar.MINUTE);
         calendar.set(Calendar.MINUTE, minute + 1);

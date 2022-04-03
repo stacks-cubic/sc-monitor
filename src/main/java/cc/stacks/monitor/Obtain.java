@@ -75,6 +75,7 @@ public class Obtain extends TimerTask {
     @Override
     public void run() {
         Logger logger = Logger.getLogger("Obtain");
+        logger.info("Obtain run...");
         StringBuilder builder = new StringBuilder("{");
         HardwareAbstractionLayer hardware = systemInfo.getHardware();
         builder.append("\"time\":").append(System.currentTimeMillis()).append(",");
