@@ -152,22 +152,12 @@ public class Obtain extends TimerTask {
         if (savePath != null && savePath.length() > 0) {
             String content = builder.toString();
             if (content.length() > 3) content = content.substring(0, content.length() - 1) + "}\n";
-
-            FileWriter writer = null;
             String path = buildFilePath();
             File file = new File(path);
-            try {
-                if (file.exists()) writer = new FileWriter(path, true);
-                else writer = new FileWriter(path);
+            try (FileWriter writer = new FileWriter(path, file.exists())) {
                 writer.write(content);
             } catch (Exception e) {
                 logger.warning("File writer error, " + e.getMessage());
-            } finally {
-                try {
-                    if (writer != null) writer.close();
-                } catch (IOException ie) {
-                    logger.warning("File writer cannot be closed, " + ie.getMessage());
-                }
             }
         }
     }
