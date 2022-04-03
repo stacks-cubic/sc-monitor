@@ -11,6 +11,7 @@ import oshi.hardware.NetworkIF;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -152,16 +153,21 @@ public class Obtain extends TimerTask {
             String content = builder.toString();
             if (content.length() > 3) content = content.substring(0, content.length() - 1) + "}\n";
 
-            FileWriter writer;
+            FileWriter writer = null;
             String path = buildFilePath();
             File file = new File(path);
             try {
                 if (file.exists()) writer = new FileWriter(path, true);
                 else writer = new FileWriter(path);
                 writer.write(content);
-                writer.close();
             } catch (Exception e) {
                 logger.warning("File writer error, " + e.getMessage());
+            } finally {
+                try {
+                    if (writer != null) writer.close();
+                } catch (IOException ie) {
+                    logger.warning("File writer cannot be closed, " + ie.getMessage());
+                }
             }
         }
     }
