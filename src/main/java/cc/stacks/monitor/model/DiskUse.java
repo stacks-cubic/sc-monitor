@@ -50,7 +50,7 @@ public class DiskUse {
      * @return JSON format io
      */
     public String getIoJSON() {
-        return "{\"r\":" + this.getRead() + ",\"w\":" + this.getRead() + "}";
+        return "{\"r\":" + this.getRead() + ",\"w\":" + this.getWrite() + "}";
     }
 
     /**
