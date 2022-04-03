@@ -1,11 +1,11 @@
 # Stacks Cubic Monitor
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Java](https://img.shields.io/badge/Java-8%20or%20later-%23FF7800?logo=java)](https://github.com/stacks-cubic/sc-monitor#how-to-build)
 [![CodeQL](https://github.com/stacks-cubic/sc-monitor/workflows/CodeQL/badge.svg)](https://github.com/stacks-cubic/sc-monitor/security/code-scanning) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=bugs)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor)
 
-Java Lightweight Hardware Monitoring Tool
+Java lightweight hardware monitoring tool, with a size of only 12KB, provides CPU load, disk IO, memory occupation and network traffic monitoring; The monitoring data will be output in the terminal and log file (optional).
 
 * [Install](#install)
 * [Use](#use)
