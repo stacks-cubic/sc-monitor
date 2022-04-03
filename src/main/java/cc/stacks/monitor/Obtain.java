@@ -27,8 +27,11 @@ import java.util.logging.Logger;
  */
 public class Obtain extends TimerTask {
 
-    // 保存位置
-    private String savePath;
+    /**
+     * Log file save location
+     * <p>Chinese: <b>保存位置</b></p>
+     */
+    private final String savePath;
     /**
      * Collection CPU data
      * <p>Chinese: <b>采集处理器数据</b></p>
@@ -94,20 +97,19 @@ public class Obtain extends TimerTask {
             List<HWDiskStore> prevDiskList = hardware.getDiskStores();
             List<NetworkIF> prevNetworkList = hardware.getNetworkIFs();
             TimeUnit.SECONDS.sleep(1);
-
-            // 采集CPU信息
+            // Collection CPU data
             if (collectionCPU) {
                 CpuUse cpuUse = new CpuUse(prevTicks, hardware.getProcessor().getSystemCpuLoadTicks());
                 builder.append("\"cpu\":").append(cpuUse.getRateJSON()).append(",");
                 logger.info(cpuUse.getRateString());
             }
-            // 采集磁盘信息
+            // Collection Disk data
             if (collectionDisk) {
                 DiskUse diskUse = new DiskUse(prevDiskList, hardware.getDiskStores());
                 builder.append("\"disk\":").append(diskUse.getIoJSON()).append(",");
                 logger.info(diskUse.getIoString());
             }
-            // 采集网络信息
+            // Collection Network data
             if (collectionNetwork) {
                 NetworkUse networkUse = new NetworkUse(prevNetworkList, hardware.getNetworkIFs());
                 builder.append("\"net\":").append(networkUse.getTransmissionJSON()).append(",");
@@ -115,6 +117,8 @@ public class Obtain extends TimerTask {
             }
         } catch (Exception e) {
             logger.warning("Thread error, " + e.getMessage());
+            // Restore interrupted
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -128,7 +132,7 @@ public class Obtain extends TimerTask {
      * @param builder  Place the character square to be saved to the file
      */
     private void getSingleData(Logger logger, HardwareAbstractionLayer hardware, StringBuilder builder) {
-        // 采集内存信息
+        // Collection Memory data
         if (collectionMemory) {
             MemoryUse memoryUse = new MemoryUse(hardware.getMemory());
             builder.append("\"memory\":").append(memoryUse.getRateJSON()).append(",");
@@ -136,6 +140,13 @@ public class Obtain extends TimerTask {
         }
     }
 
+    /**
+     * Save log to file
+     * <p>Chinese: <b>将日志保存到文件</b></p>
+     *
+     * @param logger  log object
+     * @param builder Place the character square to be saved to the file
+     */
     private void save2File(Logger logger, StringBuilder builder) {
         if (savePath != null && savePath.length() > 0) {
             String content = builder.toString();
@@ -155,9 +166,15 @@ public class Obtain extends TimerTask {
         }
     }
 
+    /**
+     * Generate the full file save path
+     * <p>Chinese: <b>生成完整文件地址</b></p>
+     *
+     * @return file save path
+     */
     private String buildFilePath() {
         int pathLength = savePath.length();
-        String fileName = "scm-"+formatter.format(LocalDate.now()) + ".log";
+        String fileName = "scm-" + formatter.format(LocalDate.now()) + ".log";
         boolean division = savePath.lastIndexOf("/") != pathLength - 1;
         return (savePath + (division ? "/" : "")).replace("\\", "/") + fileName;
     }

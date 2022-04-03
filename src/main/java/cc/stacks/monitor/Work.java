@@ -3,6 +3,7 @@ package cc.stacks.monitor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
+import java.util.logging.Logger;
 
 /**
  * Collection work class
@@ -34,9 +35,11 @@ public class Work {
         this.collectionIntervalTime = collectionIntervalTime;
     }
 
-    public void run() {
+    public void run() throws NoCollectorException {
+        if (!collectionCPU && !collectionDisk && !collectionMemory && !collectionNetwork)
+            throw new NoCollectorException("Minimum 1 collection item needs to be enabled!");
         Timer timer = new Timer();
-        Obtain obtain = new Obtain(savePath,collectionCPU,collectionMemory,collectionDisk,collectionNetwork);
+        Obtain obtain = new Obtain(savePath, collectionCPU, collectionMemory, collectionDisk, collectionNetwork);
         timer.schedule(obtain, getNextMinute(), collectionIntervalTime * 1000);
     }
 
