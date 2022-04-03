@@ -7,6 +7,28 @@
     <groupId>cc.stacks</groupId>
     <artifactId>sc-monitor</artifactId>
     <version>1.0.0</version>
+    <description>Java Lightweight Hardware Monitoring Tool</description>
+    <url>https://github.com/stacks-cubic/sc-monitor</url>
+
+    <developers>
+        <developer>
+            <id>skay-zhang</id>
+            <name>Skay Zhang</name>
+            <email>skay-zhang@hotmail.com</email>
+            <url>https://stacks.cc</url>
+            <organization>Stacks Cubic</organization>
+            <roles>
+                <role>Project Manager</role>
+                <role>Full Stack Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:stacks-cubic/sc-monitor.git</connection>
+        <developerConnection>scm:git:git@github.com:stacks-cubic/sc-monitor.git</developerConnection>
+        <url>https://github.com/stacks-cubic/sc-monitor</url>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
