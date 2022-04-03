@@ -1,7 +1,7 @@
 import cc.stacks.monitor.Obtain;
 import cc.stacks.monitor.UseCallback;
 import cc.stacks.monitor.Work;
-import cc.stacks.monitor.model.UsePacker;
+import cc.stacks.monitor.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
@@ -24,7 +24,7 @@ public class TestExample implements UseCallback {
             Work w4 = testWork4();
             TimeUnit.SECONDS.sleep(diff + 3);
             w1.stop();
-            if(w2!=null) w2.stop();
+            if (w2 != null) w2.stop();
             w3.stop();
             w4.stop();
         } catch (Exception e) {
@@ -94,6 +94,8 @@ public class TestExample implements UseCallback {
             receive(obtain.syncCollectionData());
             obtain = new Obtain(false, false, true, true);
             receive(obtain.syncCollectionData());
+            obtain = new Obtain(".", true, true, false, false);
+            receive(obtain.syncCollectionData());
         } catch (Exception e) {
             logger.warning("Test aborted, " + e.getMessage());
         }
@@ -101,9 +103,13 @@ public class TestExample implements UseCallback {
 
     @Override
     public void receive(UsePacker packer) {
-        logger.info(packer.getCpu().toString());
-        logger.info(packer.getDisk().toString());
-        logger.info(packer.getMemory().toString());
-        logger.info(packer.getNetwork().toString());
+        CpuUse cpu = packer.getCpu();
+        if (cpu != null) logger.info(cpu.toString());
+        DiskUse disk = packer.getDisk();
+        if (disk != null) logger.info(disk.toString());
+        MemoryUse memory = packer.getMemory();
+        if (memory != null) logger.info(memory.toString());
+        NetworkUse network = packer.getNetwork();
+        if (network != null) logger.info(network.toString());
     }
 }

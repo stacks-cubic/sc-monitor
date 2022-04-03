@@ -49,7 +49,7 @@ public class NetworkUse {
      * @return JSON format transmission
      */
     public String getTransmissionJSON() {
-        return "{\"up\":" + this.upload + ",\"down\":" + this.download + "}";
+        return "{\"up\":" + this.getUpload() + ",\"down\":" + this.getDownload() + "}";
     }
 
     /**
@@ -59,7 +59,7 @@ public class NetworkUse {
      * @return string format transmission
      */
     public String getTransmissionString() {
-        return "[Network]\tUpload: " + this.upload + "B/s\t\tDownload: " + this.download+"B/s";
+        return "[Network]\tUpload: " + this.getUpload() + "B/s\t\tDownload: " + this.getDownload() + "B/s";
     }
 
     /**
