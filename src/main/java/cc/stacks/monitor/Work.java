@@ -14,6 +14,7 @@ import java.util.Timer;
 public class Work {
 
     private Timer timer;
+    private final UseCallback callback;
     /**
      * Collection interval time (seconds)
      * <p>Chinese: <b>采集间隔时间(秒)</b></p>
@@ -50,6 +51,18 @@ public class Work {
      * <p>Chinese: <b>默认构造方法(间隔60秒)</b></p>
      */
     public Work() {
+        this.callback = null;
+        this.collectionIntervalTime = 60;
+    }
+
+    /**
+     * Construct method for customizing interval time
+     * <p>Chinese: <b>自定义间隔时间的构造方法</b></p>
+     *
+     * @param callback Collection interval time (seconds)
+     */
+    public Work(UseCallback callback) {
+        this.callback = callback;
         this.collectionIntervalTime = 60;
     }
 
@@ -60,6 +73,18 @@ public class Work {
      * @param collectionIntervalTime Collection interval time (seconds)
      */
     public Work(long collectionIntervalTime) {
+        this.callback = null;
+        this.collectionIntervalTime = collectionIntervalTime;
+    }
+
+    /**
+     * Construct method for customizing interval time
+     * <p>Chinese: <b>自定义间隔时间的构造方法</b></p>
+     *
+     * @param collectionIntervalTime Collection interval time (seconds)
+     */
+    public Work(UseCallback callback, long collectionIntervalTime) {
+        this.callback = callback;
         this.collectionIntervalTime = collectionIntervalTime;
     }
 
@@ -71,7 +96,7 @@ public class Work {
         if (!collectionCPU && !collectionDisk && !collectionMemory && !collectionNetwork)
             throw new NoCollectorException("Minimum 1 collection item needs to be enabled!");
         timer = new Timer();
-        Obtain obtain = new Obtain(savePath, collectionCPU, collectionMemory, collectionDisk, collectionNetwork);
+        Obtain obtain = new Obtain(callback, savePath, collectionCPU, collectionMemory, collectionDisk, collectionNetwork);
         timer.schedule(obtain, getNextMinute(), collectionIntervalTime * 1000);
     }
 
@@ -80,7 +105,7 @@ public class Work {
      * <p>Chinese: <b>停止工作</b></p>
      */
     public void stop() {
-        timer.cancel();
+        if (timer != null) timer.cancel();
         timer = null;
     }
 

@@ -1,9 +1,6 @@
 package cc.stacks.monitor;
 
-import cc.stacks.monitor.model.CpuUse;
-import cc.stacks.monitor.model.DiskUse;
-import cc.stacks.monitor.model.MemoryUse;
-import cc.stacks.monitor.model.NetworkUse;
+import cc.stacks.monitor.model.*;
 import oshi.SystemInfo;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -27,6 +24,7 @@ import java.util.logging.Logger;
  */
 public class Obtain extends TimerTask {
 
+    private final UseCallback callback;
     /**
      * Log file save location
      * <p>Chinese: <b>保存位置</b></p>
@@ -63,7 +61,35 @@ public class Obtain extends TimerTask {
      */
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    public Obtain() {
+        this.callback = null;
+        this.savePath = null;
+        this.collectionCPU = true;
+        this.collectionMemory = true;
+        this.collectionDisk = true;
+        this.collectionNetwork = true;
+    }
+
+    public Obtain(boolean cpu, boolean memory, boolean disk, boolean network) {
+        this.callback = null;
+        this.savePath = null;
+        this.collectionCPU = cpu;
+        this.collectionMemory = memory;
+        this.collectionDisk = disk;
+        this.collectionNetwork = network;
+    }
+
     public Obtain(String savePath, boolean cpu, boolean memory, boolean disk, boolean network) {
+        this.callback = null;
+        this.savePath = savePath;
+        this.collectionCPU = cpu;
+        this.collectionMemory = memory;
+        this.collectionDisk = disk;
+        this.collectionNetwork = network;
+    }
+
+    public Obtain(UseCallback callback, String savePath, boolean cpu, boolean memory, boolean disk, boolean network) {
+        this.callback = callback;
         this.savePath = savePath;
         this.collectionCPU = cpu;
         this.collectionMemory = memory;
@@ -73,13 +99,21 @@ public class Obtain extends TimerTask {
 
     @Override
     public void run() {
+        UsePacker packer = syncCollectionData();
+        if (callback != null) callback.receive(packer);
+    }
+
+    // 同步采集数据
+    public UsePacker syncCollectionData(){
+        UsePacker packer = new UsePacker();
         Logger logger = Logger.getLogger("Obtain");
         StringBuilder builder = new StringBuilder("{");
         HardwareAbstractionLayer hardware = systemInfo.getHardware();
         builder.append("\"time\":").append(System.currentTimeMillis()).append(",");
-        getOneSecondData(logger, hardware, builder);
-        getSingleData(logger, hardware, builder);
+        getOneSecondData(packer, logger, hardware, builder);
+        getSingleData(packer, logger, hardware, builder);
         save2File(logger, builder);
+        return packer;
     }
 
     /**
@@ -91,7 +125,7 @@ public class Obtain extends TimerTask {
      * @param hardware Hardware abstraction layer object
      * @param builder  Place the character square to be saved to the file
      */
-    private void getOneSecondData(Logger logger, HardwareAbstractionLayer hardware, StringBuilder builder) {
+    private void getOneSecondData(UsePacker packer, Logger logger, HardwareAbstractionLayer hardware, StringBuilder builder) {
         try {
             long[] prevTicks = hardware.getProcessor().getSystemCpuLoadTicks();
             List<HWDiskStore> prevDiskList = hardware.getDiskStores();
@@ -102,18 +136,21 @@ public class Obtain extends TimerTask {
                 CpuUse cpuUse = new CpuUse(prevTicks, hardware.getProcessor().getSystemCpuLoadTicks());
                 builder.append("\"cpu\":").append(cpuUse.getRateJSON()).append(",");
                 logger.info(cpuUse.getRateString());
+                packer.setCpu(cpuUse);
             }
             // Collection Disk data
             if (collectionDisk) {
                 DiskUse diskUse = new DiskUse(prevDiskList, hardware.getDiskStores());
                 builder.append("\"disk\":").append(diskUse.getIoJSON()).append(",");
                 logger.info(diskUse.getIoString());
+                packer.setDisk(diskUse);
             }
             // Collection Network data
             if (collectionNetwork) {
                 NetworkUse networkUse = new NetworkUse(prevNetworkList, hardware.getNetworkIFs());
                 builder.append("\"net\":").append(networkUse.getTransmissionJSON()).append(",");
                 logger.info(networkUse.getTransmissionString());
+                packer.setNetwork(networkUse);
             }
         } catch (Exception e) {
             logger.warning("Thread error, " + e.getMessage());
@@ -131,12 +168,13 @@ public class Obtain extends TimerTask {
      * @param hardware Hardware abstraction layer object
      * @param builder  Place the character square to be saved to the file
      */
-    private void getSingleData(Logger logger, HardwareAbstractionLayer hardware, StringBuilder builder) {
+    private void getSingleData(UsePacker packer, Logger logger, HardwareAbstractionLayer hardware, StringBuilder builder) {
         // Collection Memory data
         if (collectionMemory) {
             MemoryUse memoryUse = new MemoryUse(hardware.getMemory());
             builder.append("\"memory\":").append(memoryUse.getRateJSON()).append(",");
             logger.info(memoryUse.getRateString());
+            packer.setMemory(memoryUse);
         }
     }
 
