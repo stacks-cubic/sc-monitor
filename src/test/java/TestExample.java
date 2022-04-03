@@ -5,17 +5,17 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-class TestExample {
+public class TestExample {
 
     private final Logger logger = Logger.getLogger("TestExample");
 
     @Test
-    void testWork() {
+    public void testWork() {
         try {
             logger.info("Start test work");
             Work work = new Work(5);
             long diff = work.getNextMinute().toInstant().getEpochSecond() - Calendar.getInstance().toInstant().getEpochSecond();
-            work.run();
+            work.save("./").run();
             logger.info("Work has started, collection will be executed in " + diff + " seconds...");
             TimeUnit.SECONDS.sleep(diff + 8);
             work.stop();
