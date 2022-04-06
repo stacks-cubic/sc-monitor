@@ -5,15 +5,19 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=stacks-cubic_sc-monitor&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=stacks-cubic_sc-monitor)
 
-Java lightweight hardware monitoring tool, with a size of only 12KB, provides CPU load, disk IO, memory occupation and network traffic monitoring; The monitoring data will be output in the terminal and log file (optional).
+Java lightweight hardware monitoring tool, with a size of only 12KB, provides CPU load, disk IO, memory occupation and
+network traffic monitoring; The monitoring data will be output in the terminal and log file (optional).
 
 * [Install](#install)
 * [Use](#use)
-  * [Full example](#full-example)
-  * [Output to terminal](#output-to-terminal)
-  * [Output to file](#output-to-file)
+    * [Async](#async)
+      * [Full example](#full-example)
+      * [Output to terminal](#output-to-terminal)
+      * [Output to file](#output-to-file)
+      * [Output to callback](#output-to-callback)
+    * [Sync](#sync)
 * [Exception](#exception)
-  * [NoCollectorException](#nocollectorexception)
+    * [NoCollectorException](#nocollectorexception)
 * [How to build](#how-to-build)
 * [Acknowledgements](#acknowledgements)
 * [License](#license)
@@ -24,26 +28,53 @@ Java lightweight hardware monitoring tool, with a size of only 12KB, provides CP
 
 ## Use
 
-### Full example
+### Sync
+
+#### Full example
+
+```java
+public class example implements UseCallback {
+    public void text() {
+        try {
+            // Create collection work
+            // Param1 is use callback
+            // Param2 is collection interval time (seconds)
+            Work work = new Work(this, 60);
+            // Set the location to save the log, it will not be saved if not set
+            work.save("./")
+                    // No collection CPU data
+                    .excludeCPU()
+                    // No collection Disk data
+                    .excludeDisk()
+                    // No collection Memory data
+                    .excludeMemory()
+                    // No collection Network data
+                    .excludeNetwork()
+                    // Start work
+                    .run();
+        } catch (NoCollectorException e) {
+            // Minimum 1 collection item needs to be enabled!
+        }
+    }
+
+    @Override
+    public void receive(UsePacker packer) {
+        CpuUse cpu = packer.getCpu();
+        DiskUse disk = packer.getDisk();
+        MemoryUse memory = packer.getMemory();
+        NetworkUse network = packer.getNetwork();
+    }
+}
+```
+
+#### Output to terminal
+
 ```java
 public class example {
     public void text() {
         try {
-            // Create collection work
-            // Param is collection interval time (seconds)
-            Work work = new Work(60);
-            // Set the location to save the log, it will not be saved if not set
-            work.save("./")
-                // No collection CPU data
-                .excludeCPU()
-                // No collection Disk data
-                .excludeDisk()
-                // No collection Memory data
-                .excludeMemory()
-                // No collection Network data
-                .excludeNetwork()
-                // Start work
-                .run();
+            Work work = new Work();
+            work.run();
         } catch (NoCollectorException e) {
             // Minimum 1 collection item needs to be enabled!
         }
@@ -51,17 +82,61 @@ public class example {
 }
 ```
 
-### Output to terminal
+#### Output to file
+
 ```java
-Work work = new Work();
-work.run();
+public class example {
+    public void text() {
+        try {
+            Work work = new Work();
+            // Param is file save location
+            work.save("./").run();
+        } catch (NoCollectorException e) {
+            // Minimum 1 collection item needs to be enabled!
+        }
+    }
+}
 ```
 
-### Output to file
+#### Output to callback
+
 ```java
-Work work = new Work();
-// Param is file save location
-work.save("./").run();
+public class example implements UseCallback {
+    public void text() {
+        try {
+            Work work = new Work(this);
+            work.run();
+        } catch (NoCollectorException e) {
+            // Minimum 1 collection item needs to be enabled!
+        }
+    }
+
+    @Override
+    public void receive(UsePacker packer) {
+        CpuUse cpu = packer.getCpu();
+        DiskUse disk = packer.getDisk();
+        MemoryUse memory = packer.getMemory();
+        NetworkUse network = packer.getNetwork();
+    }
+}
+```
+
+### Async
+
+```java
+public class example {
+    public void text() {
+        // no callback, no save, collect all data
+        Obtain obtain = new Obtain();
+        UsePacker packer = obtain.syncCollectionData();
+        // custom collection items
+        obtain = new Obtain(false, false, true, true);
+        packer = obtain.syncCollectionData();
+        // customizing collection items and save locations
+        obtain = new Obtain(".", true, true, false, false);
+        packer = obtain.syncCollectionData();
+    }
+}
 ```
 
 ## Exception
@@ -84,4 +159,5 @@ Since we rely on `oshi-core` requires Java 8 or later.
 * [slf4j](https://github.com/qos-ch/slf4j)
 
 ## License
+
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).

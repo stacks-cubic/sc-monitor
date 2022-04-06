@@ -24,6 +24,10 @@ import java.util.logging.Logger;
  */
 public class Obtain extends TimerTask {
 
+    /**
+     * Use callback
+     * <p>Chinese: <b>使用回调</b></p>
+     */
     private final UseCallback callback;
     /**
      * Log file save location
@@ -61,6 +65,10 @@ public class Obtain extends TimerTask {
      */
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    /**
+     * Default constructor (no callback, no save, collect all data)
+     * <p>Chinese: <b>默认构造方法(无回调不保存,采集所有数据)</b></p>
+     */
     public Obtain() {
         this.callback = null;
         this.savePath = null;
@@ -70,6 +78,10 @@ public class Obtain extends TimerTask {
         this.collectionNetwork = true;
     }
 
+    /**
+     * Construction methods for custom collection items
+     * <p>Chinese: <b>自定义采集项目的构造方法</b></p>
+     */
     public Obtain(boolean cpu, boolean memory, boolean disk, boolean network) {
         this.callback = null;
         this.savePath = null;
@@ -79,6 +91,10 @@ public class Obtain extends TimerTask {
         this.collectionNetwork = network;
     }
 
+    /**
+     * Construction method for customizing collection items and save locations
+     * <p>Chinese: <b>自定义采集项目和保存位置的构造方法</b></p>
+     */
     public Obtain(String savePath, boolean cpu, boolean memory, boolean disk, boolean network) {
         this.callback = null;
         this.savePath = savePath;
@@ -88,6 +104,10 @@ public class Obtain extends TimerTask {
         this.collectionNetwork = network;
     }
 
+    /**
+     * Construct methods for customizing collection items, save locations and callbacks
+     * <p>Chinese: <b>自定义采集项目、保存位置和回调的构造方法</b></p>
+     */
     public Obtain(UseCallback callback, String savePath, boolean cpu, boolean memory, boolean disk, boolean network) {
         this.callback = callback;
         this.savePath = savePath;
@@ -103,7 +123,12 @@ public class Obtain extends TimerTask {
         if (callback != null) callback.receive(packer);
     }
 
-    // 同步采集数据
+    /**
+     * Synchronized data collection
+     * <p>Chinese: <b>同步采集数据</b></p>
+     *
+     * @return Using data wrappers
+     */
     public UsePacker syncCollectionData(){
         UsePacker packer = new UsePacker();
         Logger logger = Logger.getLogger("Obtain");

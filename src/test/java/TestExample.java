@@ -87,18 +87,14 @@ public class TestExample implements UseCallback {
 
     @Test
     public void testObtain() {
-        try {
-            // 测试直接获取数据
-            logger.info("Test obtain");
-            Obtain obtain = new Obtain();
-            receive(obtain.syncCollectionData());
-            obtain = new Obtain(false, false, true, true);
-            receive(obtain.syncCollectionData());
-            obtain = new Obtain(".", true, true, false, false);
-            receive(obtain.syncCollectionData());
-        } catch (Exception e) {
-            logger.warning("Test aborted, " + e.getMessage());
-        }
+        // 测试直接获取数据
+        logger.info("Test obtain");
+        Obtain obtain = new Obtain();
+        receive(obtain.syncCollectionData());
+        obtain = new Obtain(false, false, true, true);
+        receive(obtain.syncCollectionData());
+        obtain = new Obtain(".", true, true, false, false);
+        receive(obtain.syncCollectionData());
     }
 
     @Override

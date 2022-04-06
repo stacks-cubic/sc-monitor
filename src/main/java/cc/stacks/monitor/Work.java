@@ -14,6 +14,10 @@ import java.util.Timer;
 public class Work {
 
     private Timer timer;
+    /**
+     * Use callback
+     * <p>Chinese: <b>使用回调</b></p>
+     */
     private final UseCallback callback;
     /**
      * Collection interval time (seconds)
