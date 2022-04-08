@@ -28,7 +28,7 @@ network traffic monitoring; The monitoring data will be output in the terminal a
 
 ## Use
 
-### Sync
+### Async
 
 #### Full example
 
@@ -121,7 +121,7 @@ public class example implements UseCallback {
 }
 ```
 
-### Async
+### Sync
 
 ```java
 public class example {
